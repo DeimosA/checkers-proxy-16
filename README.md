@@ -1,1 +1,3 @@
-# checkers-proxy-16
+# Checkers Proxy 2016
+
+TDT4195 project
