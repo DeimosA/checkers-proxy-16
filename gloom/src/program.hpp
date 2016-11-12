@@ -9,6 +9,8 @@
 #include <string>
 
 
+unsigned int setupVAO(float* vertices, int v_size, unsigned int* indices, int i_size, float* colours, int c_size);
+
 // Main OpenGL program
 void runProgram(GLFWwindow* window);
 

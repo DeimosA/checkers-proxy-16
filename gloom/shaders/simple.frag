@@ -1,8 +1,9 @@
 #version 430 core
 
-out vec4 color;
+in layout(location=1) vec4 inColour;
+out vec4 colour;
 
 void main()
 {
-    color = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    colour = inColour;
 }
