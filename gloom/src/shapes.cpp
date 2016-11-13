@@ -26,7 +26,9 @@ VAO_t createHex(colour_t colour) {
 
 	for (int i = 0; i < sideCount; i++) {
 		x = cos(degreesPerCorner*i);
+		//printf("x is: %f\n", x);
 		z = sin(degreesPerCorner*i);
+		//printf("z is: %f\n", z);
 
 		// Top hex
 		vertices[i + 0] = x;
@@ -39,14 +41,16 @@ VAO_t createHex(colour_t colour) {
 		colours[i + 3] = colour.alpha;
 
 		// Bottom hex
-		vertices[i + 6 + 0] = x;
-		vertices[i + 6 + 1] = -0.2;
-		vertices[i + 6 + 2] = z;
+		int offset = i * 3 + vertexCount/2;
+		vertices[offset + 0] = x;
+		vertices[offset + 1] = -0.2;
+		vertices[offset + 2] = z;
 
-		colours[i + 6 + 0] = colour.red;
-		colours[i + 6 + 1] = colour.green;
-		colours[i + 6 + 2] = colour.blue;
-		colours[i + 6 + 3] = colour.alpha;
+		offset = i * 4 + colourCount/2;
+		colours[offset + 0] = colour.red;
+		colours[offset + 1] = colour.green;
+		colours[offset + 2] = colour.blue;
+		colours[offset + 3] = colour.alpha;
 	}
 
 	unsigned int indices[] = {
@@ -74,39 +78,39 @@ VAO_t createHex(colour_t colour) {
 
 	unsigned int vaoID = setupVAO(vertices, vertexCount, indices, indexCount, colours, colourCount);
 
-	return VAO_t{vaoID, indexCount};
-
 	delete vertices;
 	delete colours;
-	delete indices;
+	//delete indices;
+
+	return VAO_t{vaoID, indexCount};
 }
 
 
 /* Create five pointed star piece */
 VAO_t createStar(colour_t colour) {
-
+	return VAO_t{0, 0};
 }
 
 
 /* Create 3/4th circle piece */
 VAO_t create34thCircle(colour_t colour) {
-
+	return VAO_t{ 0, 0 };
 }
 
 
 /* Create A-like piece sans middle bar */
 VAO_t createA(colour_t colour) {
-
+	return VAO_t{ 0, 0 };
 }
 
 
 /* Create triangle piece */
 VAO_t createTriangle(colour_t colour) {
-
+	return VAO_t{ 0, 0 };
 }
 
 
 /* Create parallelogram piece */
 VAO_t createPoGram(colour_t colour) {
-
+	return VAO_t{ 0, 0 };
 }

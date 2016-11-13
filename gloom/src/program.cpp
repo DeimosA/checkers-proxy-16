@@ -7,6 +7,7 @@
 #include "gloom/shader.hpp"
 #include "sphere.hpp"
 #include "sceneGraph.hpp"
+#include "shapes.hpp"
 
 #include "glm/glm.hpp"
 #include "glm/mat4x4.hpp"
@@ -95,8 +96,11 @@ SceneNode* setupSceneGraph() {
 
 	// Sun
 	SceneNode* sun = createSceneNode();
-	sun->vertexArrayObjectID = createCircleVAO(slices, layers, 1.0, 1.0, 0.6, 0.1);
-	sun->indiceCount = indiceCount;
+	VAO_t hexModel = createHex(colour_t{1.0, 1.0, 0.0, 1.0, 0.0});
+	//sun->vertexArrayObjectID = createCircleVAO(slices, layers, 1.0, 1.0, 0.6, 0.1);
+	sun->vertexArrayObjectID = hexModel.vaoID;
+	//sun->indiceCount = indiceCount;
+	sun->indiceCount = hexModel.indexCount;
 	sun->rotationSpeedRadians = PI / 60;
 	sun->orbitSpeedRadians = 0;
 	sun->rotationDirection = glm::vec3(0.0, 1.0, 0.0);
@@ -310,18 +314,18 @@ void runProgram(GLFWwindow* window)
 		SceneNode* sun = sceneGraph; // Rename for better readability
 		glBindVertexArray(sun->vertexArrayObjectID);
 		// The following transformations must be done here to avoid affecting the entire system
-		glm::mat4 model0 = glm::rotate((float)PI / 2, glm::vec3(1.0, 0.0, 0.0)); // Rotate body 90 degrees to avoid "the eye"
-		glm::mat4 model1 = glm::scale(glm::vec3(sun->scaleFactor, sun->scaleFactor, sun->scaleFactor)); // Scale here to avoid scaling entire system
-		glm::mat4 model2 = glm::rotate(count*sun->rotationSpeedRadians, sun->rotationDirection); // Rotate body around itself
+		glm::mat4 model0;// = glm::rotate((float)PI / 2, glm::vec3(1.0, 0.0, 0.0)); // Rotate body 90 degrees to avoid "the eye"
+		glm::mat4 model1;// = glm::scale(glm::vec3(sun->scaleFactor, sun->scaleFactor, sun->scaleFactor)); // Scale here to avoid scaling entire system
+		glm::mat4 model2;// = glm::rotate(count*sun->rotationSpeedRadians, sun->rotationDirection); // Rotate body around itself
 
 		glm::mat4 sunModel = sun->currentTransformationMatrix;
-		glm::mat4 model = sunModel * model2 * model1 * model0; // Complete model transformation
+		glm::mat4 model = sunModel * model2 * model1; // Complete model transformation  * model0
 		glm::mat4 MVP = projection * view * model;
 		glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(MVP));
 		glDrawElements(GL_TRIANGLES, sun->indiceCount, GL_UNSIGNED_INT, 0);
 
 		for (int i = 0; i < sun->children.size(); i++) { // Planets
-			SceneNode* planet = sceneGraph->children[i];
+			SceneNode* planet = sun->children[i];
 			glBindVertexArray(planet->vertexArrayObjectID);
 			model0 = glm::rotate((float)PI / 2, glm::vec3(1.0, 0.0, 0.0));
 			model1 = glm::scale(glm::vec3(planet->scaleFactor, planet->scaleFactor, planet->scaleFactor));
