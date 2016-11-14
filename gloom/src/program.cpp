@@ -96,7 +96,7 @@ SceneNode* setupSceneGraph() {
 
 	// Sun
 	SceneNode* sun = createSceneNode();
-	VAO_t hexModel = createHex(colour_t{1.0, 1.0, 0.0, 1.0, 0.0});
+	VAO_t hexModel = create34thCircle(colour_t{1.0, 1.0, 0.0, 1.0, 0.0});
 	//sun->vertexArrayObjectID = createCircleVAO(slices, layers, 1.0, 1.0, 0.6, 0.1);
 	sun->vertexArrayObjectID = hexModel.vaoID;
 	//sun->indiceCount = indiceCount;
