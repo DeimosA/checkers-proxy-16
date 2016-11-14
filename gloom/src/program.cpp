@@ -258,7 +258,9 @@ void runProgram(GLFWwindow* window)
 	float vertAngleDegree = 55;
 	float vertAngleRad = vertAngleDegree * PI / 180;
 	glm::mat4 projection = glm::perspective(vertAngleRad, (float)windowWidth/windowHeight, 0.1f, 100.0f);
-    float count = 0;
+    int count = 0; // Frame counter
+	float timeCount = 0; // Time counter
+	getTimeDeltaSeconds(); // Reset before rendering starts
     /////////////////
     // Rendering Loop
     while (!glfwWindowShouldClose(window))
@@ -302,7 +304,8 @@ void runProgram(GLFWwindow* window)
         glm::mat4 MVP = projection * view * model;
         glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(MVP));
 		*/
-		count += timeDelta; // Count to 1 per second
+		count++; // Count frames
+		timeCount += timeDelta; // Count to 1 per second
 		traverseSceneGraph(sceneGraph, timeDelta);
 
         glm::mat4 view0 = glm::translate(glm::vec3(-camPos.x, -camPos.y, -camPos.z)); // Move world in oposite direction of camera
@@ -315,11 +318,11 @@ void runProgram(GLFWwindow* window)
 		glBindVertexArray(sun->vertexArrayObjectID);
 		// The following transformations must be done here to avoid affecting the entire system
 		glm::mat4 model0;// = glm::rotate((float)PI / 2, glm::vec3(1.0, 0.0, 0.0)); // Rotate body 90 degrees to avoid "the eye"
-		glm::mat4 model1;// = glm::scale(glm::vec3(sun->scaleFactor, sun->scaleFactor, sun->scaleFactor)); // Scale here to avoid scaling entire system
-		glm::mat4 model2;// = glm::rotate(count*sun->rotationSpeedRadians, sun->rotationDirection); // Rotate body around itself
+		glm::mat4 model1 = glm::scale(glm::vec3(sun->scaleFactor, sun->scaleFactor, sun->scaleFactor)); // Scale here to avoid scaling entire system
+		glm::mat4 model2 = glm::rotate(timeCount*sun->rotationSpeedRadians, sun->rotationDirection); // Rotate body around itself
 
 		glm::mat4 sunModel = sun->currentTransformationMatrix;
-		glm::mat4 model = sunModel * model2 * model1; // Complete model transformation  * model0
+		glm::mat4 model = sunModel * model2 * model1 * model0; // Complete model transformation  * model0
 		glm::mat4 MVP = projection * view * model;
 		glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(MVP));
 		glDrawElements(GL_TRIANGLES, sun->indiceCount, GL_UNSIGNED_INT, 0);
@@ -329,7 +332,7 @@ void runProgram(GLFWwindow* window)
 			glBindVertexArray(planet->vertexArrayObjectID);
 			model0 = glm::rotate((float)PI / 2, glm::vec3(1.0, 0.0, 0.0));
 			model1 = glm::scale(glm::vec3(planet->scaleFactor, planet->scaleFactor, planet->scaleFactor));
-			model2 = glm::rotate(count*planet->rotationSpeedRadians, planet->rotationDirection);
+			model2 = glm::rotate(timeCount*planet->rotationSpeedRadians, planet->rotationDirection);
 
 			glm::mat4 planetModel = planet->currentTransformationMatrix;
 			model = sunModel * planetModel * model2 * model1 * model0;
@@ -342,7 +345,7 @@ void runProgram(GLFWwindow* window)
 				glBindVertexArray(moon->vertexArrayObjectID);
 				model0 = glm::rotate((float)PI / 2, glm::vec3(1.0, 0.0, 0.0));
 				model1 = glm::scale(glm::vec3(moon->scaleFactor, moon->scaleFactor, moon->scaleFactor));
-				model2 = glm::rotate(count*moon->rotationSpeedRadians, moon->rotationDirection);
+				model2 = glm::rotate(timeCount*moon->rotationSpeedRadians, moon->rotationDirection);
 
 				glm::mat4 moonModel = moon->currentTransformationMatrix;
 				model = sunModel * planetModel * moonModel * model2 * model1 * model0;
@@ -364,6 +367,9 @@ void runProgram(GLFWwindow* window)
         // Flip buffers
         glfwSwapBuffers(window);
     }
+	// Calculate and print average frames per second
+	float frameRate = count / timeCount;
+	printf("Average framerate: %f\n", frameRate);
 }
 
 
