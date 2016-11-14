@@ -13,46 +13,46 @@
 VAO_t createHex(colour_t colour) {
 
 	int sideCount = 6;
-	int vertexCount = 12 * 3;
-	int colourCount = 12 * 4;
-	int indexCount = (2 * 4 + sideCount * 2) * 3;
+	int vertexSize = 2 * sideCount * 3;
+	int colourSize = 2 * sideCount * 4;
+	int indexCount = (2 * 4 + 2 * sideCount) * 3;
 
-	float* vertices = new float[vertexCount];
-	float* colours = new float[colourCount];
-	//unsigned int* indices = new unsigned int[indexCount];
+	float* vertices = new float[vertexSize];
+	float* colours = new float[colourSize];
 
 	float degreesPerCorner = 2 * M_PI / sideCount;
-	float x, z;
+	float x, y, z;
+	y = 0.2;
 
 	for (int i = 0; i < sideCount; i++) {
+		// Calculate coordinates based on angle
 		x = cos(degreesPerCorner*i);
-		//printf("x is: %f\n", x);
 		z = sin(degreesPerCorner*i);
-		//printf("z is: %f\n", z);
 
 		// Top hex
-		vertices[i + 0] = x;
-		vertices[i + 1] = 0.2;
-		vertices[i + 2] = z;
-
-		colours[i + 0] = colour.red;
-		colours[i + 1] = colour.green;
-		colours[i + 2] = colour.blue;
-		colours[i + 3] = colour.alpha;
-
-		// Bottom hex
-		int offset = i * 3 + vertexCount/2;
+		int offset = 3 * i;
 		vertices[offset + 0] = x;
-		vertices[offset + 1] = -0.2;
+		vertices[offset + 1] = y;
 		vertices[offset + 2] = z;
 
-		offset = i * 4 + colourCount/2;
+		offset = 4 * i;
+		colours[offset + 0] = colour.red;
+		colours[offset + 1] = colour.green;
+		colours[offset + 2] = colour.blue;
+		colours[offset + 3] = colour.alpha;
+
+		// Bottom hex
+		offset = 3 * i + vertexSize/2;
+		vertices[offset + 0] = x;
+		vertices[offset + 1] = -y;
+		vertices[offset + 2] = z;
+
+		offset = i * 4 + colourSize/2;
 		colours[offset + 0] = colour.red;
 		colours[offset + 1] = colour.green;
 		colours[offset + 2] = colour.blue;
 		colours[offset + 3] = colour.alpha;
 	}
-
 	unsigned int indices[] = {
 		0, 4, 2, // Top
 		0, 5, 4,
@@ -76,12 +76,9 @@ VAO_t createHex(colour_t colour) {
 		5, 0, 6
 	};
 
-	unsigned int vaoID = setupVAO(vertices, vertexCount, indices, indexCount, colours, colourCount);
-
+	unsigned int vaoID = setupVAO(vertices, vertexSize, indices, indexCount, colours, colourSize);
 	delete vertices;
 	delete colours;
-	//delete indices;
-
 	return VAO_t{vaoID, indexCount};
 }
 
