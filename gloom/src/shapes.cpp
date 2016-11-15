@@ -79,7 +79,7 @@ VAO_t createHex(colour_t colour) {
 	unsigned int vaoID = setupVAO(vertices, vertexSize, indices, indexCount, colours, colourSize);
 	delete vertices;
 	delete colours;
-	return VAO_t{vaoID, indexCount};
+	return VAO_t{ vaoID, indexCount };
 }
 
 
@@ -174,7 +174,7 @@ VAO_t createStar(colour_t colour) {
 	unsigned int vaoID = setupVAO(vertices, vertexSize, indices, indexCount, colours, colourSize);
 	delete vertices;
 	delete colours;
-	return VAO_t{vaoID, indexCount};
+	return VAO_t{ vaoID, indexCount };
 }
 
 
@@ -326,17 +326,167 @@ VAO_t create34thCircle(colour_t colour) {
 
 /* Create A-like piece sans middle bar */
 VAO_t createA(colour_t colour) {
-	return VAO_t{ 0, 0 };
+
+	int sideCount = 6;
+	int vertexSize = 2 * sideCount * 3;
+	int colourSize = 2 * sideCount * 4;
+	int indexCount = (2 * 4 + 2 * sideCount) * 3;
+
+	float sideLength = 2.0f;
+	float outerRadius = sideLength / sqrt(3.0f); //  Radius of the circumscribed circle
+	float innerRadius = outerRadius / 2; // Radius of the inscribed circle
+	float y = 0.2;
+	float insideWidth = sideLength - sideLength / 3;
+	float height = outerRadius + innerRadius;
+	float insideHeight = insideWidth * sqrt(3.0f) / 2;
+	float insideZ = outerRadius - (height - insideHeight);
+
+	float vertices[] = {
+		0, y, -outerRadius, // Top
+		sideLength/2, y, innerRadius,
+		insideWidth/2, y, innerRadius,
+		0, y, -insideZ,
+		-insideWidth/2, y, innerRadius,
+		-sideLength/2, y, innerRadius,
+
+		0, -y, -outerRadius, // Bottom
+		sideLength/2, -y, innerRadius,
+		insideWidth/2, -y, innerRadius,
+		0, -y, -insideZ,
+		-insideWidth/2, -y, innerRadius,
+		-sideLength/2, -y, innerRadius
+	};
+	float colours[] = {
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+	};
+	unsigned int indices[] = {
+		0, 3, 1, // Top
+		3, 2, 1,
+		0, 5, 3,
+		3, 5, 4,
+		6, 7, 9, // Bottom
+		9, 7, 8,
+		6, 9, 11,
+		9, 10, 11,
+		0, 7, 6, // Side 1
+		0, 1, 7,
+		1, 8, 7, // Side 2
+		1, 2, 8,
+		2, 9, 8, // Side 3
+		2, 3, 9,
+		3, 10, 9, // Side 4
+		3, 4, 10,
+		4, 11, 10, // Side 5
+		4, 5, 11,
+		5, 6, 11, // Side 6
+		5, 0, 6
+	};
+	unsigned int vaoID = setupVAO(vertices, vertexSize, indices, indexCount, colours, colourSize);
+	return VAO_t{ vaoID, indexCount };
 }
 
 
 /* Create triangle piece */
 VAO_t createTriangle(colour_t colour) {
-	return VAO_t{ 0, 0 };
+	int sideCount = 3;
+	int vertexSize = 2 * sideCount * 3;
+	int colourSize = 2 * sideCount * 4;
+	int indexCount = (2 * 1 + 2 * sideCount) * 3;
+
+	float sideLength = 2.0f;
+	float outerRadius = sideLength / sqrt(3.0f); //  Radius of the circumscribed circle
+	float innerRadius = outerRadius / 2; // Radius of the inscribed circle
+	float y = 0.2;
+	float height = outerRadius + innerRadius;
+
+	float vertices[] = {
+		0, y, -outerRadius, // Top
+		sideLength/2, y, innerRadius,
+		-sideLength/2, y, innerRadius,
+
+		0, -y, -outerRadius, // Bottom
+		sideLength/2, -y, innerRadius,
+		-sideLength/2, -y, innerRadius
+	};
+	float colours[] = {
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+	};
+	unsigned int indices[] = {
+		0, 2, 1, // Top
+		3, 4, 5, // Bottom
+		0, 4, 3, // Side 1
+		0, 1, 4,
+		1, 5, 4, // Side 2
+		1, 2, 5,
+		2, 3, 5, // Side 3
+		2, 0, 3
+	};
+	unsigned int vaoID = setupVAO(vertices, vertexSize, indices, indexCount, colours, colourSize);
+	return VAO_t{ vaoID, indexCount };
 }
 
 
 /* Create parallelogram piece */
 VAO_t createPoGram(colour_t colour) {
-	return VAO_t{ 0, 0 };
+	int sideCount = 4;
+	int vertexSize = 2 * sideCount * 3;
+	int colourSize = 2 * sideCount * 4;
+	int indexCount = (2 * 2 + 2 * sideCount) * 3;
+	float y = 0.2;
+	float z = 0.9;
+	float xNear = 0.35;
+	float xFar = 1.0;
+
+	float vertices[] = {
+		xFar, y, -z, // Top
+		xNear, y, z,
+		-xFar, y, z,
+		-xNear, y, -z,
+		xFar, -y, -z, // Bottom
+		xNear, -y, z,
+		-xFar, -y, z,
+		-xNear, -y, -z,
+	};
+	float colours[] = {
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+	};
+	unsigned int indices[] = {
+		0, 3, 1, // Top
+		3, 2, 1,
+		4, 5, 7, // Bottom
+		7, 5, 6,
+		0, 5, 4, // Side 1
+		0, 1, 5,
+		1, 6, 5, // Side 2
+		1, 2, 6,
+		2, 7, 6, // Side 3
+		2, 3, 7,
+		3, 4, 7, // Side 4
+		3, 0, 4,
+	};
+	unsigned int vaoID = setupVAO(vertices, vertexSize, indices, indexCount, colours, colourSize);
+	return VAO_t{ vaoID, indexCount };
 }
