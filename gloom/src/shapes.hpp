@@ -1,6 +1,5 @@
 #ifndef SHAPES_HPP
 #define SHAPES_HPP
-#pragma once
 
 
 typedef struct colour_t {
