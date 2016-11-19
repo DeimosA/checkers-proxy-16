@@ -7,6 +7,8 @@
 #include "program.hpp"
 
 
+// Globally define y offset
+float y = 0.2;
 
 
 /* Create hexagonal piece */
@@ -21,8 +23,7 @@ VAO_t createHex(colour_t colour) {
 	float* colours = new float[colourSize];
 
 	float degreesPerCorner = 2 * M_PI / sideCount;
-	float x, y, z;
-	y = 0.2;
+	float x, z;
 
 	for (int i = 0; i < sideCount; i++) {
 		// Calculate coordinates based on angle
@@ -96,8 +97,7 @@ VAO_t createStar(colour_t colour) {
 
 	float degreesPerCorner = 2 * M_PI / sideCount;
 	float innerCornerScalar = 0.5;
-	float x, y, z;
-	y = 0.2;
+	float x, z;
 
 	for (int i = 0; i < sideCount; i++) {
 		// Calculate coordinates based on angle
@@ -190,8 +190,7 @@ VAO_t create34thCircle(colour_t colour) {
 	float* colours = new float[colourSize];
 
 	float degreesPerCorner = (3 * M_PI/2) / (sideCount-2);
-	float x, y, z;
-	y = 0.2;
+	float x, z;
 
 	for (int i = 0; i < sideCount-1; i++) {
 		// Calculate coordinates based on angle
@@ -335,7 +334,6 @@ VAO_t createA(colour_t colour) {
 	float sideLength = 2.0f;
 	float outerRadius = sideLength / sqrt(3.0f); //  Radius of the circumscribed circle
 	float innerRadius = outerRadius / 2; // Radius of the inscribed circle
-	float y = 0.2;
 	float insideWidth = sideLength - sideLength / 3;
 	float height = outerRadius + innerRadius;
 	float insideHeight = insideWidth * sqrt(3.0f) / 2;
@@ -407,7 +405,6 @@ VAO_t createTriangle(colour_t colour) {
 	float sideLength = 2.0f;
 	float outerRadius = sideLength / sqrt(3.0f); //  Radius of the circumscribed circle
 	float innerRadius = outerRadius / 2; // Radius of the inscribed circle
-	float y = 0.2;
 	float height = outerRadius + innerRadius;
 
 	float vertices[] = {
@@ -448,7 +445,6 @@ VAO_t createPoGram(colour_t colour) {
 	int vertexSize = 2 * sideCount * 3;
 	int colourSize = 2 * sideCount * 4;
 	int indexCount = (2 * 2 + 2 * sideCount) * 3;
-	float y = 0.2;
 	float z = 0.9;
 	float xNear = 0.35;
 	float xFar = 1.0;
