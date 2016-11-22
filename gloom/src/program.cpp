@@ -461,6 +461,16 @@ void changeSelectedPiece() {
 
 // Check if 2 pieces collide or if pos outside board
 bool checkPieceCollision(glm::vec2 pos) {
+	// Check offboard position
+	if (pos[0] < 0 || pos[0] > board.width-1 || pos[1] < 0 || pos[1] > board.height-1) {
+		return true;
+	}
+	// Check piece collision
+	for (int i = 0; i < pieces.size(); i++) {
+		if (pieces[i]->pieceGridPos == pos) {
+			return true;
+		}
+	}
 	return false;
 }
 
