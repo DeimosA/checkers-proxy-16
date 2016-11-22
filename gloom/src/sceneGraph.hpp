@@ -67,11 +67,18 @@ typedef struct SceneNode {
 	// Number of indices in the VAO
 	unsigned int indexCount;
 
-	// Position for pieces on board (only applicable for piece types)
-	glm::vec2 pieceGridPos;
-
 	// Type for the model of this scene node
 	ModelType modelType;
+
+	// Piece specific settings
+	// Position for piece on board
+	glm::vec2 pieceGridPos;
+	// Is the piece animating?
+	bool isAnimating;
+	// Animation offset
+	glm::vec2 aniOffset;
+
+	
 } SceneNode;
 
 SceneNode* createSceneNode();

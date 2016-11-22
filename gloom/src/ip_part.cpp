@@ -110,6 +110,7 @@ Board processImage(Mat image) {
 	}
 	printf("\n");
 
+
 	// Test stuff
 	Mat cannyImage;
 	Canny(image, cannyImage, 10, 90, 3, true);

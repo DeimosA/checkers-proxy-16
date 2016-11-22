@@ -46,6 +46,8 @@ Board board;
 int selectedPiece = 0;
 float defaultPieceScale = 0.8;
 float selectedPieceHeight = 3.0;
+float pieceAniSpeed = 5.0; // Move n per second in world coordinates (square is 2.0 wide)
+float aniStopDelta = 0.03; // 0.03 should be ok down to ~33 fps
 // Keep an indexable list of pieces
 std::vector<SceneNode*> pieces;
 
@@ -278,8 +280,33 @@ void traverseSceneGraph(SceneNode* sceneGraph, double timeDelta) {
 	if (sceneGraph->modelType == ModelType::PIECESHAPE) {
 		int col = sceneGraph->pieceGridPos[0];
 		int row = sceneGraph->pieceGridPos[1];
-		sceneGraph->x = 2 * col - (float)board.width + 1;
-		sceneGraph->z = 2 * row - (float)board.height + 1;
+		float xOff = sceneGraph->aniOffset[0];
+		float zOff = sceneGraph->aniOffset[1];
+		sceneGraph->x = 2 * col - (float)board.width + 1 + xOff;
+		sceneGraph->z = 2 * row - (float)board.height + 1 + zOff;
+
+		// Update piece animation
+		if (sceneGraph->isAnimating) {
+			float deltaMovement = timeDelta * pieceAniSpeed;
+			if (deltaMovement > aniStopDelta) deltaMovement = aniStopDelta; // Ensure we don't move to far
+			if (sceneGraph->aniOffset[0] > aniStopDelta) {
+				sceneGraph->aniOffset[0] -= deltaMovement;
+			}
+			else if (sceneGraph->aniOffset[0] < -aniStopDelta) {
+				sceneGraph->aniOffset[0] += deltaMovement;
+			}
+			else if (sceneGraph->aniOffset[1] > aniStopDelta) {
+				sceneGraph->aniOffset[1] -= deltaMovement;
+			}
+			else if (sceneGraph->aniOffset[1] < -aniStopDelta) {
+				sceneGraph->aniOffset[1] += deltaMovement;
+			}
+			else { // We ar closer than aniStopDelta to zero so stop animation
+				sceneGraph->isAnimating = false;
+				sceneGraph->aniOffset[0] = 0;
+				sceneGraph->aniOffset[1] = 0;
+			}
+		}
 	}
 
 	// scale, translate, rotate
@@ -478,6 +505,7 @@ bool checkPieceCollision(glm::vec2 pos) {
 // Move the selected piece
 void movePiece(int dCol, int dRow) {
 	SceneNode* selPiece = pieces[selectedPiece];
+	if (selPiece->isAnimating) return; // Do not allow movement if animating
 	glm::vec2 oldPos = selPiece->pieceGridPos;
 	glm::vec2 newPos = glm::vec2(oldPos[0] + dCol, oldPos[1] + dRow);
 	// If collision, do not move
@@ -485,6 +513,9 @@ void movePiece(int dCol, int dRow) {
 		return;
 	} else {
 		selPiece->pieceGridPos = newPos;
+		selPiece->isAnimating = true;
+		selPiece->aniOffset[0] = -2.0f * dCol;
+		selPiece->aniOffset[1] = -2.0f * dRow;
 	}
 }
 

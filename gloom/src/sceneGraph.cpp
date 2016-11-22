@@ -55,6 +55,8 @@ SceneNode* createSceneNode() {
 	node->indexCount = 0;
 	node->pieceGridPos = glm::vec2(-1);
 	node->modelType = ModelType::GENERIC;
+	node->isAnimating = false;
+	node->aniOffset = glm::vec2(0);
 	return node;
 }
 
