@@ -154,8 +154,22 @@ Board processImage(Mat image) {
 }
 
 
+// Sample board with each piece-type in arbitrary location
+Board createSampleBoard() {
+	Board board;
+	board.pieces[1][1] = PieceShape::CIRCLE;
+	board.pieces[5][1] = PieceShape::A;
+	board.pieces[3][0] = PieceShape::HEX;
+	board.pieces[7][2] = PieceShape::POGRAM;
+	board.pieces[6][2] = PieceShape::STAR;
+	board.pieces[1][4] = PieceShape::TRIANGLE;
+	return board;
+}
+
+
 /* Start point for image processing part */
 Board ip_main() {
+	// Select image to process
 	std::string fileNames[] = {
 		"easy01.png",
 		"easy02.png",
@@ -163,16 +177,21 @@ Board ip_main() {
 		"difficult02.png"
 	};
 	std::cout << "\nChoose image:\n"
-		<< "[0] " << fileNames[0] << " (default)\n"
+		<< "[0] " << fileNames[0] << "\n"
 		<< "[1] " << fileNames[1] << "\n"
 		<< "[2] " << fileNames[2] << "\n"
-		<< "[3] " << fileNames[3] << "\n";
-	int fileIndex = 0;
+		<< "[3] " << fileNames[3] << "\n"
+		<< "[4] Sample board (No image)\n";
+	int fileIndex = 4;
 	std::cin >> fileIndex;
-	std::cout << std::endl;
-	if (fileIndex > 3 || fileIndex < 0) fileIndex = 0;
-	std::string filename = fileNames[fileIndex];
+	std::cout << "\n";
 
+	// If no valid image is selected, just return sample board
+	if (fileIndex > 3 || fileIndex < 0) {
+		return createSampleBoard();
+	}
+
+	std::string filename = fileNames[fileIndex];
 	Mat image = readImage("../images/" + filename);
 	Board board = processImage(image);
 
