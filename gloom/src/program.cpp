@@ -43,6 +43,11 @@ struct {
 } camPos;
 
 Board board;
+int selectedPiece = 0;
+float defaultPieceScale = 0.8;
+float selectedPieceHeight = 3.0;
+// Keep an indexable list of pieces
+std::vector<SceneNode*> pieces;
 
 
 /**
@@ -163,12 +168,14 @@ SceneNode* setupSceneGraph() {
 			piece->y = 0.9;
 			piece->x = 2 * col - (float)board.width + 1;
 			piece->z = 2 * row - (float)board.height + 1;
-			piece->scaleVector = glm::vec3(0.8);
+			piece->scaleVector = glm::vec3(defaultPieceScale);
 
+			pieces.push_back(piece);
 			addChild(table, piece);
 		}
 	}
-
+	// Set height so we can see the default selected piece
+	pieces[selectedPiece]->scaleVector[1] = selectedPieceHeight;
 	
 
 
@@ -430,6 +437,18 @@ void runProgram(GLFWwindow* window, Board checkerboard)
 }
 
 
+// Visualize selected piece by increasing height of model
+void changeSelectedPiece() {
+	SceneNode* currentSelPiece = pieces[selectedPiece];
+	selectedPiece = ++selectedPiece % pieces.size();
+	SceneNode* nextSelPiece = pieces[selectedPiece];
+
+	// Set y scale
+	currentSelPiece->scaleVector[1] = defaultPieceScale;
+	nextSelPiece->scaleVector[1] = selectedPieceHeight;
+}
+
+
 void keyboardCallback(GLFWwindow* window, int key, int scancode,
                       int action, int mods)
 {
@@ -438,6 +457,9 @@ void keyboardCallback(GLFWwindow* window, int key, int scancode,
             case GLFW_KEY_ESCAPE: // Use escape key for terminating the GLFW window
                 glfwSetWindowShouldClose(window, GL_TRUE);
                 break;
+			case GLFW_KEY_TAB: // Switch selected piece
+				changeSelectedPiece();
+				break;
 
             case GLFW_KEY_A: // Go left
 				heldKeys.left = true;
