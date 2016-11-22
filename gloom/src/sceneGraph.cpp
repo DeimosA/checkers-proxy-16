@@ -47,12 +47,12 @@ SceneNode* createSceneNode() {
 	node->x = 0;
 	node->y = 0;
 	node->z = 0;
-	node->scaleFactor = 1.0;
+	node->scaleVector = glm::vec3(1.0);
 	node->rotationSpeedRadians = 0;
 	node->orbitSpeedRadians = 0;
-	node->rotationDirection = glm::vec3(1, 0, 0);
+	node->rotationDirection = glm::vec3(0, 1, 0);
 	node->vertexArrayObjectID = -1;
-	node->indiceCount = 0;
+	node->indexCount = 0;
 	return node;
 }
 
@@ -76,7 +76,7 @@ void printNode(SceneNode* node) {
 		node->children.size(),
 		node->rotationX, node->rotationY, node->rotationZ,
 		node->x, node->y, node->z,
-		node->scaleFactor,
+		node->scaleVector,
 		node->rotationSpeedRadians,
 		node->rotationDirection[0], node->rotationDirection[1], node->rotationDirection[2], 
 		node->vertexArrayObjectID);

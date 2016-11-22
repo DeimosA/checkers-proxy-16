@@ -43,7 +43,7 @@ typedef struct SceneNode {
 	float x, y, z;
 	
 	// The node's size
-	float scaleFactor;
+	glm::vec3 scaleVector;
 	
 	// The node's speed at which it rotates and orbits
 	float rotationSpeedRadians;
@@ -59,7 +59,7 @@ typedef struct SceneNode {
 	int vertexArrayObjectID;
 
 	// Number of indices in the VAO
-	unsigned int indiceCount;
+	unsigned int indexCount;
 } SceneNode;
 
 SceneNode* createSceneNode();

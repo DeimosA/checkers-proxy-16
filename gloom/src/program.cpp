@@ -8,6 +8,7 @@
 #include "sphere.hpp"
 #include "sceneGraph.hpp"
 #include "shapes.hpp"
+#include "ip_part.hpp"
 
 #include "glm/glm.hpp"
 #include "glm/mat4x4.hpp"
@@ -17,7 +18,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 
 
-
+// Keep track of held down keys
 struct {
 	bool forward = false;
 	bool back = false;
@@ -32,13 +33,16 @@ struct {
 	bool viewDown = false;
 } heldKeys;
 
+// Camera position
 struct {
 	float x = 0;
 	float y = 0;
-	float z = 50;
+	float z = 20;
 	float dirVert = 0;
 	float dirHor = 0;
 } camPos;
+
+Board board;
 
 
 /**
@@ -94,49 +98,60 @@ SceneNode* setupSceneGraph() {
 	unsigned int slices = 20, layers = 10;
 	int indiceCount = slices * layers * 2 * 3; // slices * layers * PRIMITIVES_PER_RECTANGLE * VERTICES_PER_TRIANGLE
 
-	// Sun
-	SceneNode* sun = createSceneNode();
-	VAO_t hexModel = createPoGram(colour_t{1.0, 1.0, 0.0, 1.0, 0.0});
-	//sun->vertexArrayObjectID = createCircleVAO(slices, layers, 1.0, 1.0, 0.6, 0.1);
-	sun->vertexArrayObjectID = hexModel.vaoID;
-	//sun->indiceCount = indiceCount;
-	sun->indiceCount = hexModel.indexCount;
-	sun->rotationSpeedRadians = PI / 60;
-	sun->orbitSpeedRadians = 0;
-	sun->rotationDirection = glm::vec3(0.0, 1.0, 0.0);
-	sun->scaleFactor = 5;
+	// Center node
+	SceneNode* table = createSceneNode();
+	VAO_t tableModel = createSlab(colour_t{ 0.4f, 0.25f, 0.2f, 1.0f, 0.0f });
+	table->vertexArrayObjectID = tableModel.vaoID;
+	table->indexCount = tableModel.indexCount;
+	table->rotationSpeedRadians = 0;
+	table->orbitSpeedRadians = 0;
+	table->rotationDirection = glm::vec3(0.0, 1.0, 0.0);
+	table->scaleVector = glm::vec3(10.0, 5.0, 10.0);
+	table->y = -0.5;
 
-	// planet 1
-	SceneNode* planet1 = createSceneNode();
-	planet1->vertexArrayObjectID = createCircleVAO(slices, layers, 0.3, 0.0, 0.3, 0.1);
-	planet1->indiceCount = indiceCount;
-	planet1->rotationDirection = glm::vec3(0.0, -1.0, 0.0);
-	planet1->rotationSpeedRadians = PI / 10;
-	planet1->orbitSpeedRadians = PI / 30;
-	planet1->scaleFactor = 0.3;
-	planet1->x = 4;
-	planet1->y = 0;
-	planet1->z = 6;
+	// Checkerboard
+	for (int col = 0; col < board.width; col++) {
+		for (int row = 0; row < board.height; row++) {
+			SceneNode* square = createSceneNode();
+			colour_t colour;
+			if (col % 2 == row % 2) {
+				colour = { 0.7f, 0.0f, 0.0f, 1.0f, 0.0f };
+			} else {
+				colour = { 0.0f, 0.0f, 0.7f, 1.0f, 0.0f };
+			}
+			VAO_t squareModel = createSlab(colour);
+			square->vertexArrayObjectID = squareModel.vaoID;
+			square->indexCount = squareModel.indexCount;
+
+			square->y = 0.6;
+			square->x = 2 * col - (float)board.width + 1;
+			square->z = 2 * row - (float)board.height + 1;
+
+			addChild(table, square);
+		}
+	}
+
+	
 
 	// planet 2
 	SceneNode* planet2 = createSceneNode();
 	planet2->vertexArrayObjectID = createCircleVAO(slices, layers, 0.1, 0.2, 0.7, 0.1);
-	planet2->indiceCount = indiceCount;
+	planet2->indexCount = indiceCount;
 	planet2->rotationDirection = glm::vec3(0.0, 1.0, 0.0);
 	planet2->rotationSpeedRadians = PI / 40;
 	planet2->orbitSpeedRadians = PI / 50;
-	planet2->scaleFactor = 0.8;
+	planet2->scaleVector = glm::vec3(0.8);
 	planet2->x = -8;
 	planet2->y = 0;
 	planet2->z = -15;
 
 	SceneNode* planet2_moon = createSceneNode();
 	planet2_moon->vertexArrayObjectID = createCircleVAO(slices, layers, 0.0, 0.0, 0.4, 0.1);
-	planet2_moon->indiceCount = indiceCount;
+	planet2_moon->indexCount = indiceCount;
 	planet2_moon->rotationDirection = glm::vec3(0.0, 1.0, 0.0);
 	planet2_moon->rotationSpeedRadians = PI / 20;
 	planet2_moon->orbitSpeedRadians = PI / 10;
-	planet2_moon->scaleFactor = 0.2;
+	planet2_moon->scaleVector = glm::vec3(0.2);
 	planet2_moon->x = 1.5;
 	planet2_moon->y = 0;
 	planet2_moon->z = 0;
@@ -144,22 +159,22 @@ SceneNode* setupSceneGraph() {
 	// planet 3
 	SceneNode* planet3 = createSceneNode();
 	planet3->vertexArrayObjectID = createCircleVAO(slices, layers, 0.8, 0.3, 0.1, 0.1);
-	planet3->indiceCount = indiceCount;
+	planet3->indexCount = indiceCount;
 	planet3->rotationDirection = glm::vec3(0.0, -1.0, 0.0);
 	planet3->rotationSpeedRadians = PI / 60;
 	planet3->orbitSpeedRadians = PI / 70;
-	planet3->scaleFactor = 1.0;
+	planet3->scaleVector = glm::vec3(1.0);
 	planet3->x = 14;
 	planet3->y = 0;
 	planet3->z = -19;
 
 	SceneNode* planet3_moon = createSceneNode();
 	planet3_moon->vertexArrayObjectID = createCircleVAO(slices, layers, 0.5, 0.1, 0.0, 0.1);
-	planet3_moon->indiceCount = indiceCount;
+	planet3_moon->indexCount = indiceCount;
 	planet3_moon->rotationDirection = glm::vec3(0.0, -1.0, 0.0);
 	planet3_moon->rotationSpeedRadians = PI / 30;
 	planet3_moon->orbitSpeedRadians = PI / 15;
-	planet3_moon->scaleFactor = 0.25;
+	planet3_moon->scaleVector = glm::vec3(0.25);
 	planet3_moon->x = 0;
 	planet3_moon->y = 0;
 	planet3_moon->z = 2.5;
@@ -167,11 +182,11 @@ SceneNode* setupSceneGraph() {
 	// planet 4
 	SceneNode* planet4 = createSceneNode();
 	planet4->vertexArrayObjectID = createCircleVAO(slices, layers, 0.1, 0.5, 0.1, 0.1);
-	planet4->indiceCount = indiceCount;
+	planet4->indexCount = indiceCount;
 	planet4->rotationDirection = glm::vec3(0.0, 1.0, 0.0);
 	planet4->rotationSpeedRadians = PI / 100;
 	planet4->orbitSpeedRadians = PI / 120;
-	planet4->scaleFactor = 1.8;
+	planet4->scaleVector = glm::vec3(10.0);
 	planet4->x = -8;
 	planet4->y = 0;
 	planet4->z = -30;
@@ -179,27 +194,26 @@ SceneNode* setupSceneGraph() {
 	// planet 5
 	SceneNode* planet5 = createSceneNode();
 	planet5->vertexArrayObjectID = createCircleVAO(slices, layers, 0.2, 0.3, 0.3, 0.1);
-	planet5->indiceCount = indiceCount;
+	planet5->indexCount = indiceCount;
 	planet5->rotationDirection = glm::vec3(0.0, 1.0, 0.0);
 	planet5->rotationSpeedRadians = PI / 40;
 	planet5->orbitSpeedRadians = PI / 200;
-	planet5->scaleFactor = 0.55;
+	planet5->scaleVector = glm::vec3(0.55);
 	planet5->x = -30;
 	planet5->y = 0;
 	planet5->z = 30;
 
 	// Add all children
-	addChild(sun, planet1);
-	addChild(sun, planet2);
-	addChild(sun, planet3);
-	addChild(sun, planet4);
-	addChild(sun, planet5);
+	addChild(table, planet2);
+	addChild(table, planet3);
+	addChild(table, planet4);
+	addChild(table, planet5);
 
 	addChild(planet2, planet2_moon);
 	addChild(planet3, planet3_moon);
 
 	// Return the root node
-	return sun;
+	return table;
 }
 
 
@@ -223,8 +237,10 @@ void traverseSceneGraph(SceneNode* sceneGraph, double timeDelta) {
 }
 
 
-void runProgram(GLFWwindow* window)
+void runProgram(GLFWwindow* window, Board checkerboard)
 {
+	board = checkerboard;
+
     // Set GLFW callback mechanism(s)
     glfwSetKeyCallback(window, keyboardCallback);
 
@@ -275,9 +291,9 @@ void runProgram(GLFWwindow* window)
 		double timeDelta = getTimeDeltaSeconds();
 
 		// Handle held keys
-		double moveSpeed = 1 * timeDelta; // Speed is n per second
-		double viewSpeed = 0.5 * timeDelta;
-		if (heldKeys.speed) moveSpeed *= 5; // n times speed with speed modifier
+		double moveSpeed = 5 * timeDelta; // Speed is n per second
+		double viewSpeed = 0.6 * timeDelta;
+		if (heldKeys.speed) moveSpeed *= 2; // n times speed with speed modifier
 
 		if (heldKeys.forward) camPos.z -= moveSpeed;
 		if (heldKeys.back) camPos.z += moveSpeed;
@@ -317,41 +333,41 @@ void runProgram(GLFWwindow* window)
 		SceneNode* sun = sceneGraph; // Rename for better readability
 		glBindVertexArray(sun->vertexArrayObjectID);
 		// The following transformations must be done here to avoid affecting the entire system
-		glm::mat4 model0;// = glm::rotate((float)PI / 2, glm::vec3(1.0, 0.0, 0.0)); // Rotate body 90 degrees to avoid "the eye"
-		glm::mat4 model1 = glm::scale(glm::vec3(sun->scaleFactor, sun->scaleFactor, sun->scaleFactor)); // Scale here to avoid scaling entire system
+		glm::mat4 model0 = glm::rotate((float)PI / 2, glm::vec3(1.0, 0.0, 0.0)); // Rotate body 90 degrees to avoid "the eye"
+		glm::mat4 model1 = glm::scale(sun->scaleVector); // Scale here to avoid scaling entire system
 		glm::mat4 model2 = glm::rotate(timeCount*sun->rotationSpeedRadians, sun->rotationDirection); // Rotate body around itself
 
 		glm::mat4 sunModel = sun->currentTransformationMatrix;
-		glm::mat4 model = sunModel * model2 * model1 * model0; // Complete model transformation  * model0
+		glm::mat4 model = sunModel * model2 * model1; // Complete model transformation  * model0
 		glm::mat4 MVP = projection * view * model;
 		glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(MVP));
-		glDrawElements(GL_TRIANGLES, sun->indiceCount, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, sun->indexCount, GL_UNSIGNED_INT, 0);
 
 		for (int i = 0; i < sun->children.size(); i++) { // Planets
 			SceneNode* planet = sun->children[i];
 			glBindVertexArray(planet->vertexArrayObjectID);
 			model0 = glm::rotate((float)PI / 2, glm::vec3(1.0, 0.0, 0.0));
-			model1 = glm::scale(glm::vec3(planet->scaleFactor, planet->scaleFactor, planet->scaleFactor));
+			model1 = glm::scale(planet->scaleVector);
 			model2 = glm::rotate(timeCount*planet->rotationSpeedRadians, planet->rotationDirection);
 
 			glm::mat4 planetModel = planet->currentTransformationMatrix;
-			model = sunModel * planetModel * model2 * model1 * model0;
+			model = sunModel * planetModel * model2 * model1;
 			MVP = projection * view * model;
 			glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(MVP));
-			glDrawElements(GL_TRIANGLES, planet->indiceCount, GL_UNSIGNED_INT, 0);
+			glDrawElements(GL_TRIANGLES, planet->indexCount, GL_UNSIGNED_INT, 0);
 
 			for (int j = 0; j < planet->children.size(); j++) { // Moons
 				SceneNode* moon = planet->children[j];
 				glBindVertexArray(moon->vertexArrayObjectID);
 				model0 = glm::rotate((float)PI / 2, glm::vec3(1.0, 0.0, 0.0));
-				model1 = glm::scale(glm::vec3(moon->scaleFactor, moon->scaleFactor, moon->scaleFactor));
+				model1 = glm::scale(moon->scaleVector);
 				model2 = glm::rotate(timeCount*moon->rotationSpeedRadians, moon->rotationDirection);
 
 				glm::mat4 moonModel = moon->currentTransformationMatrix;
 				model = sunModel * planetModel * moonModel * model2 * model1 * model0;
 				MVP = projection * view * model;
 				glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(MVP));
-				glDrawElements(GL_TRIANGLES, moon->indiceCount, GL_UNSIGNED_INT, 0);
+				glDrawElements(GL_TRIANGLES, moon->indexCount, GL_UNSIGNED_INT, 0);
 			}
 
 		}

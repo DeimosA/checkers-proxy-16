@@ -60,6 +60,7 @@ GLFWwindow* initialise()
     gladLoadGL();
 
     // Print various OpenGL information to stdout
+	printf("\n");
     printf("%s: %s\n", glGetString(GL_VENDOR), glGetString(GL_RENDERER));
     printf("GLFW\t %s\n", glfwGetVersionString());
     printf("OpenGL\t %s\n", glGetString(GL_VERSION));
@@ -85,7 +86,7 @@ int main(int argc, char* argb[])
     GLFWwindow* window = initialise();
 
     // Run an OpenGL application using this window
-    runProgram(window);
+    runProgram(window, board);
 
     // Terminate GLFW (no need to call glfwDestroyWindow)
     glfwTerminate();

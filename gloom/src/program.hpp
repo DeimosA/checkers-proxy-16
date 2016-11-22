@@ -8,11 +8,13 @@
 #include <glad/glad.h>
 #include <string>
 
+#include "ip_part.hpp"
+
 
 unsigned int setupVAO(float* vertices, int v_size, unsigned int* indices, int i_size, float* colours, int c_size);
 
 // Main OpenGL program
-void runProgram(GLFWwindow* window);
+void runProgram(GLFWwindow* window, Board board);
 
 
 // GLFW callback mechanisms
