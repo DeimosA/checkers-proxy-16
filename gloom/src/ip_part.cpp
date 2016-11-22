@@ -64,15 +64,16 @@ Board processImage(Mat image) {
 		waitKey(1);
 
 		// Try to detect template in image and record positions
-		Ptr<GeneralizedHoughBallard> ghbHex = createGeneralizedHoughBallard();
-		ghbHex->setTemplate(currentTemplate);
-		ghbHex->setCannyLowThresh(30);
-		ghbHex->setCannyHighThresh(80);
-		ghbHex->setMinDist(10);
-		ghbHex->setVotesThreshold(15);
+		Ptr<GeneralizedHoughBallard> ghb = createGeneralizedHoughBallard();
+		ghb->setTemplate(currentTemplate);
+		ghb->setCannyLowThresh(30);
+		ghb->setCannyHighThresh(80);
+		ghb->setMinDist(20);
+		ghb->setVotesThreshold(75);
+		ghb->setDp(4.0);
 
 		std::vector<Vec4f> templPositions;
-		ghbHex->detect(image, templPositions);
+		ghb->detect(image, templPositions);
 
 		// Iterate over detected positions
 		int blue = i * 25 > 255, red = 255 - i * 25; // Marker color variation for each templates
@@ -118,7 +119,7 @@ Board processImage(Mat image) {
 	waitKey(waitTime);
 
 	std::vector<Vec4i> houghLines;
-	HoughLinesP(cannyImage, houghLines, 3, 0.5*CV_PI / 180, 40, 15, 10);
+	HoughLinesP(cannyImage, houghLines, 3, 0.5*CV_PI / 180, 50, 15, 10);
 	cvtColor(cannyImage, cannyImage, CV_GRAY2BGR);
 	for (int i = 0; i < houghLines.size(); i++)
 	{

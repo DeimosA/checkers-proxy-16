@@ -190,12 +190,12 @@ SceneNode* setupSceneGraph() {
 	planet2->vertexArrayObjectID = createCircleVAO(slices, layers, 0.1, 0.2, 0.7, 0.1);
 	planet2->indexCount = indiceCount;
 	planet2->rotationDirection = glm::vec3(0.0, 1.0, 0.0);
-	planet2->rotationSpeedRadians = PI / 30;
+	planet2->rotationSpeedRadians = PI / 20;
 	planet2->orbitSpeedRadians = PI / 50;
-	planet2->scaleVector = glm::vec3(1.8);
-	planet2->x = -8;
+	planet2->scaleVector = glm::vec3(2.8);
+	planet2->x = -10;
 	planet2->y = 0;
-	planet2->z = -15;
+	planet2->z = -20;
 
 	SceneNode* planet2_moon = createSceneNode();
 	planet2_moon->vertexArrayObjectID = createCircleVAO(slices, layers, 0.0, 0.0, 0.4, 0.1);
@@ -204,7 +204,7 @@ SceneNode* setupSceneGraph() {
 	planet2_moon->rotationSpeedRadians = PI / 10;
 	planet2_moon->orbitSpeedRadians = PI / 10;
 	planet2_moon->scaleVector = glm::vec3(0.4);
-	planet2_moon->x = 2.5;
+	planet2_moon->x = 4.5;
 	planet2_moon->y = 0;
 	planet2_moon->z = 0;
 
@@ -238,10 +238,10 @@ SceneNode* setupSceneGraph() {
 	planet4->rotationDirection = glm::vec3(0.0, 1.0, 0.0);
 	planet4->rotationSpeedRadians = PI / 90;
 	planet4->orbitSpeedRadians = PI / 120;
-	planet4->scaleVector = glm::vec3(11.0);
-	planet4->x = -10;
+	planet4->scaleVector = glm::vec3(19.0);
+	planet4->x = -29;
 	planet4->y = 0;
-	planet4->z = -40;
+	planet4->z = -55;
 
 	// planet 5
 	SceneNode* planet5 = createSceneNode();
