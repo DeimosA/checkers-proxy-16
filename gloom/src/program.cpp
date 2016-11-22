@@ -169,6 +169,8 @@ SceneNode* setupSceneGraph() {
 			piece->x = 2 * col - (float)board.width + 1;
 			piece->z = 2 * row - (float)board.height + 1;
 			piece->scaleVector = glm::vec3(defaultPieceScale);
+			piece->modelType = ModelType::PIECESHAPE;
+			piece->pieceGridPos = glm::vec2(col, row);
 
 			pieces.push_back(piece);
 			addChild(table, piece);
@@ -271,6 +273,14 @@ SceneNode* setupSceneGraph() {
 void traverseSceneGraph(SceneNode* sceneGraph, double timeDelta) {
 	sceneGraph->rotationY += timeDelta * sceneGraph->orbitSpeedRadians;
 	sceneGraph->rotationY = fmod(sceneGraph->rotationY, 2*PI); // Check overflow
+
+	// Update piece position based on its grid position
+	if (sceneGraph->modelType == ModelType::PIECESHAPE) {
+		int col = sceneGraph->pieceGridPos[0];
+		int row = sceneGraph->pieceGridPos[1];
+		sceneGraph->x = 2 * col - (float)board.width + 1;
+		sceneGraph->z = 2 * row - (float)board.height + 1;
+	}
 
 	// scale, translate, rotate
 	//glm::mat4 m0 = glm::rotate((float)PI / 2, glm::vec3(1.0, 0.0, 0.0)); // Rotate all bodies 90 degrees to avoid "the eye"
@@ -449,6 +459,26 @@ void changeSelectedPiece() {
 }
 
 
+// Check if 2 pieces collide or if pos outside board
+bool checkPieceCollision(glm::vec2 pos) {
+	return false;
+}
+
+
+// Move the selected piece
+void movePiece(int dCol, int dRow) {
+	SceneNode* selPiece = pieces[selectedPiece];
+	glm::vec2 oldPos = selPiece->pieceGridPos;
+	glm::vec2 newPos = glm::vec2(oldPos[0] + dCol, oldPos[1] + dRow);
+	// If collision, do not move
+	if (checkPieceCollision(newPos)) {
+		return;
+	} else {
+		selPiece->pieceGridPos = newPos;
+	}
+}
+
+
 void keyboardCallback(GLFWwindow* window, int key, int scancode,
                       int action, int mods)
 {
@@ -459,6 +489,19 @@ void keyboardCallback(GLFWwindow* window, int key, int scancode,
                 break;
 			case GLFW_KEY_TAB: // Switch selected piece
 				changeSelectedPiece();
+				break;
+			// Move selected piece
+			case GLFW_KEY_LEFT:
+				movePiece(-1, 0);
+				break;
+			case GLFW_KEY_RIGHT:
+				movePiece(1, 0);
+				break;
+			case GLFW_KEY_UP:
+				movePiece(0, -1);
+				break;
+			case GLFW_KEY_DOWN:
+				movePiece(0, 1);
 				break;
 
             case GLFW_KEY_A: // Go left

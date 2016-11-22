@@ -53,6 +53,8 @@ SceneNode* createSceneNode() {
 	node->rotationDirection = glm::vec3(0, 1, 0);
 	node->vertexArrayObjectID = -1;
 	node->indexCount = 0;
+	node->pieceGridPos = glm::vec2(-1);
+	node->modelType = ModelType::GENERIC;
 	return node;
 }
 

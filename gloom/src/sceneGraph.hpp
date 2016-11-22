@@ -25,6 +25,12 @@ glm::mat4 peekMatrix(std::stack<glm::mat4>* stack);
 
 void printMatrix(glm::mat4 matrix);
 
+// For when model type info is needed
+enum class ModelType {
+	GENERIC,
+	PIECESHAPE
+};
+
 // SceneGraph related functions
 
 // In case you haven't got much experience with C or C++, let me explain this "typedef" you see below.
@@ -60,6 +66,12 @@ typedef struct SceneNode {
 
 	// Number of indices in the VAO
 	unsigned int indexCount;
+
+	// Position for pieces on board (only applicable for piece types)
+	glm::vec2 pieceGridPos;
+
+	// Type for the model of this scene node
+	ModelType modelType;
 } SceneNode;
 
 SceneNode* createSceneNode();
