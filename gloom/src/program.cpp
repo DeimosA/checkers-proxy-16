@@ -482,16 +482,16 @@ void keyboardCallback(GLFWwindow* window, int key, int scancode,
 			case GLFW_KEY_LEFT_CONTROL: // Speed modifier
 				heldKeys.speed = true;
 				break;
-            case GLFW_KEY_RIGHT: // Rotate right
+            case GLFW_KEY_L: // Rotate right
 				heldKeys.viewRight = true;
                 break;
-            case GLFW_KEY_LEFT: // Rotate left
+            case GLFW_KEY_J: // Rotate left
 				heldKeys.viewLeft = true;
                 break;
-            case GLFW_KEY_UP: // Rotate up
+            case GLFW_KEY_I: // Rotate up
 				heldKeys.viewUp = true;
                 break;
-            case GLFW_KEY_DOWN: // Rotate down
+            case GLFW_KEY_K: // Rotate down
 				heldKeys.viewDown = true;
                 break;
         }
@@ -520,16 +520,16 @@ void keyboardCallback(GLFWwindow* window, int key, int scancode,
 		case GLFW_KEY_LEFT_CONTROL:
 			heldKeys.speed = false;
 			break;
-		case GLFW_KEY_RIGHT: // Rotate right
+		case GLFW_KEY_L: // Rotate right
 			heldKeys.viewRight = false;
 			break;
-		case GLFW_KEY_LEFT: // Rotate left
+		case GLFW_KEY_J: // Rotate left
 			heldKeys.viewLeft = false;
 			break;
-		case GLFW_KEY_UP: // Rotate up
+		case GLFW_KEY_I: // Rotate up
 			heldKeys.viewUp = false;
 			break;
-		case GLFW_KEY_DOWN: // Rotate down
+		case GLFW_KEY_K: // Rotate down
 			heldKeys.viewDown = false;
 			break;
 		}
