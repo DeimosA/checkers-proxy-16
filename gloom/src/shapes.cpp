@@ -486,3 +486,49 @@ VAO_t createPoGram(colour_t colour) {
 	unsigned int vaoID = setupVAO(vertices, vertexSize, indices, indexCount, colours, colourSize);
 	return VAO_t{ vaoID, indexCount };
 }
+
+
+VAO_t createSlab(colour_t colour) {
+	int sideCount = 4;
+	int vertexSize = 2 * sideCount * 3;
+	int colourSize = 2 * sideCount * 4;
+	int indexCount = (2 * 2 + 2 * sideCount) * 3;
+	float y = 0.1;
+
+	float vertices[] = {
+		1.0, y, -1.0, // Top
+		1.0, y, 1.0,
+		-1.0, y, 1.0,
+		-1.0, y, -1.0,
+		1.0, -y, -1.0, // Bottom
+		1.0, -y, 1.0,
+		-1.0, -y, 1.0,
+		-1.0, -y, -1.0
+	};
+	float colours[] = {
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+		colour.red, colour.green, colour.blue, colour.alpha,
+	};
+	unsigned int indices[] = {
+		0, 3, 1, // Top
+		3, 2, 1,
+		4, 5, 7, // Bottom
+		7, 5, 6,
+		0, 5, 4, // Side 1
+		0, 1, 5,
+		1, 6, 5, // Side 2
+		1, 2, 6,
+		2, 7, 6, // Side 3
+		2, 3, 7,
+		3, 4, 7, // Side 4
+		3, 0, 4,
+	};
+	unsigned int vaoID = setupVAO(vertices, vertexSize, indices, indexCount, colours, colourSize);
+	return VAO_t{ vaoID, indexCount };
+}
