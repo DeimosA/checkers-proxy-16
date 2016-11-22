@@ -1,6 +1,7 @@
 // Local headers
 #include "gloom/gloom.hpp"
 #include "program.hpp"
+#include "ip_part.hpp"
 
 // System headers
 #include <glad/glad.h>
@@ -8,6 +9,7 @@
 
 // Standard headers
 #include <cstdlib>
+#include <iostream>
 
 
 // A callback which allows GLFW to report errors whenever they occur
@@ -69,6 +71,16 @@ GLFWwindow* initialise()
 
 int main(int argc, char* argb[])
 {
+	Board board;
+	try {
+		board = ip_main();
+	}
+	catch (std::runtime_error e) {
+		std::cerr << e.what() << std::endl;
+		return EXIT_FAILURE;
+	}
+
+	
     // Initialise window using GLFW
     GLFWwindow* window = initialise();
 
@@ -77,6 +89,6 @@ int main(int argc, char* argb[])
 
     // Terminate GLFW (no need to call glfwDestroyWindow)
     glfwTerminate();
-
+	
     return EXIT_SUCCESS;
 }
