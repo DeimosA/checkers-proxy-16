@@ -109,7 +109,7 @@ SceneNode* setupSceneGraph() {
 	table->scaleVector = glm::vec3(10.0, 5.0, 10.0);
 	table->y = -0.5;
 
-	// Checkerboard
+	// Checkerboard and pieces
 	for (int col = 0; col < board.width; col++) {
 		for (int row = 0; row < board.height; row++) {
 			SceneNode* square = createSceneNode();
@@ -128,8 +128,49 @@ SceneNode* setupSceneGraph() {
 			square->z = 2 * row - (float)board.height + 1;
 
 			addChild(table, square);
+
+			// Pieces
+			VAO_t pieceModel;
+			switch (board.pieces[col][row]) {
+			case PieceShape::NONE:
+				continue; // Skip rest of loop if no piece
+				break;
+			case PieceShape::CIRCLE:
+				pieceModel = create34thCircle();
+				break;
+			case PieceShape::A:
+				pieceModel = createA();
+				break;
+			case PieceShape::HEX:
+				pieceModel = createHex();
+				break;
+			case PieceShape::POGRAM:
+				pieceModel = createPoGram();
+				break;
+			case PieceShape::STAR:
+				pieceModel = createStar();
+				break;
+			case PieceShape::TRIANGLE:
+				pieceModel = createTriangle();
+				break;
+			default:
+				continue;
+				break;
+			}
+			SceneNode* piece = createSceneNode();
+			piece->vertexArrayObjectID = pieceModel.vaoID;
+			piece->indexCount = pieceModel.indexCount;
+			piece->y = 0.9;
+			piece->x = 2 * col - (float)board.width + 1;
+			piece->z = 2 * row - (float)board.height + 1;
+			piece->scaleVector = glm::vec3(0.8);
+
+			addChild(table, piece);
 		}
 	}
+
+	
+
 
 	
 
@@ -138,9 +179,9 @@ SceneNode* setupSceneGraph() {
 	planet2->vertexArrayObjectID = createCircleVAO(slices, layers, 0.1, 0.2, 0.7, 0.1);
 	planet2->indexCount = indiceCount;
 	planet2->rotationDirection = glm::vec3(0.0, 1.0, 0.0);
-	planet2->rotationSpeedRadians = PI / 40;
+	planet2->rotationSpeedRadians = PI / 30;
 	planet2->orbitSpeedRadians = PI / 50;
-	planet2->scaleVector = glm::vec3(0.8);
+	planet2->scaleVector = glm::vec3(1.8);
 	planet2->x = -8;
 	planet2->y = 0;
 	planet2->z = -15;
@@ -149,10 +190,10 @@ SceneNode* setupSceneGraph() {
 	planet2_moon->vertexArrayObjectID = createCircleVAO(slices, layers, 0.0, 0.0, 0.4, 0.1);
 	planet2_moon->indexCount = indiceCount;
 	planet2_moon->rotationDirection = glm::vec3(0.0, 1.0, 0.0);
-	planet2_moon->rotationSpeedRadians = PI / 20;
+	planet2_moon->rotationSpeedRadians = PI / 10;
 	planet2_moon->orbitSpeedRadians = PI / 10;
-	planet2_moon->scaleVector = glm::vec3(0.2);
-	planet2_moon->x = 1.5;
+	planet2_moon->scaleVector = glm::vec3(0.4);
+	planet2_moon->x = 2.5;
 	planet2_moon->y = 0;
 	planet2_moon->z = 0;
 
@@ -184,12 +225,12 @@ SceneNode* setupSceneGraph() {
 	planet4->vertexArrayObjectID = createCircleVAO(slices, layers, 0.1, 0.5, 0.1, 0.1);
 	planet4->indexCount = indiceCount;
 	planet4->rotationDirection = glm::vec3(0.0, 1.0, 0.0);
-	planet4->rotationSpeedRadians = PI / 100;
+	planet4->rotationSpeedRadians = PI / 90;
 	planet4->orbitSpeedRadians = PI / 120;
-	planet4->scaleVector = glm::vec3(10.0);
-	planet4->x = -8;
+	planet4->scaleVector = glm::vec3(11.0);
+	planet4->x = -10;
 	planet4->y = 0;
-	planet4->z = -30;
+	planet4->z = -40;
 
 	// planet 5
 	SceneNode* planet5 = createSceneNode();

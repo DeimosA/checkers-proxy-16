@@ -36,7 +36,7 @@ Board processImage(Mat image) {
 	imshow(windowName, image);
 	waitKey(waitTime);
 
-	// Load templates to detect
+	// Load templates to detect (order matters)
 	std::vector<Mat> templates;
 	templates.push_back(readImage("../images/templates/34circle.png"));
 	templates.push_back(readImage("../images/templates/a.png"));
