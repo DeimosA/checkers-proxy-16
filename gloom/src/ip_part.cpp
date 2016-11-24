@@ -112,6 +112,7 @@ Board processImage(Mat image) {
 	printf("\n");
 
 
+	/////////////
 	// Test stuff
 	Mat cannyImage;
 	Canny(image, cannyImage, 10, 90, 3, true);
@@ -133,7 +134,6 @@ Board processImage(Mat image) {
 	}
 	imshow("Canny & HoughLines", cannyImage);
 
-	return board;
 	
 	/*
 	// Split image in checker squares for faster processing
@@ -153,6 +153,7 @@ Board processImage(Mat image) {
 	}
 	*/
 
+	return board;
 }
 
 
